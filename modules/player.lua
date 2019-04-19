@@ -31,28 +31,6 @@ pfUI:RegisterModule("player", 20400, function ()
 
   if C.unitframes.player.energy == "1" then
     pfUI.uf.player.power.tick = CreateFrame("Frame", nil, pfUI.uf.player.power.bar)
-    pfUI.uf.player.power.tick:RegisterEvent("PLAYER_ENTERING_WORLD")
-    pfUI.uf.player.power.tick:RegisterEvent("UNIT_DISPLAYPOWER")
-
-    pfUI.uf.player.power.tick:SetScript("OnShow", function()
-      this.spark:Show()
-    end)
-
-    pfUI.uf.player.power.tick:SetScript("OnHide", function()
-      this.spark:Hide()
-    end)
-
-    pfUI.uf.player.power.tick:SetScript("OnEvent", function()
-      if event == "PLAYER_ENTERING_WORLD" then this.lastTick = GetTime() end
-      if event == "PLAYER_ENTERING_WORLD" or ( event == "UNIT_DISPLAYPOWER" and arg1 == "player" ) then
-        if UnitPowerType("player") ~= 3 then
-          this:Hide()
-        else
-          this:Show()
-        end
-      end
-    end)
-
     pfUI.uf.player.power.tick.spark = pfUI.uf.player.power.bar:CreateTexture(nil, 'OVERLAY')
     pfUI.uf.player.power.tick.spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
     pfUI.uf.player.power.tick.spark:SetHeight(C.unitframes.player.pheight + 15)
@@ -72,17 +50,33 @@ pfUI:RegisterModule("player", 20400, function ()
     end
 
     pfUI.uf.player.power.tick:SetScript("OnUpdate", function()
-      if UnitPowerType("player") ~= 3 then this:Hide() end
       if not this.energy then this.energy = UnitMana("player") end
+      if not this.start then this.start = GetTime() end
+      if not this.stop then this.stop = GetTime() + 2 end
 
-      if(UnitMana("player") > this.energy or GetTime() >= this.lastTick + 2) then
-        this.lastTick = GetTime()
+      local diff = abs(UnitMana("player")-this.energy)
+
+      if UnitMana("player") < this.energy and diff > 5 then
+        this.start = GetTime()
+        this.stop = GetTime() + 5
+      elseif UnitMana("player") > this.energy and diff > 5 then
+        this.start = GetTime()
+        this.stop = GetTime() + 2
+      elseif GetTime() > this.stop and UnitMana("player") == UnitManaMax("player") then
+        this.start = GetTime()
+        this.stop = GetTime() + 2
       end
 
       this.energy = UnitMana("player")
 
-      local value = round((GetTime() - this.lastTick) * 100)
-      local pos = (C.unitframes.player.pwidth ~= "-1" and C.unitframes.player.pwidth or C.unitframes.player.width) / 200 * value
+      local width = C.unitframes.player.pwidth ~= "-1" and C.unitframes.player.pwidth or C.unitframes.player.width
+      local cur = round(this.stop - GetTime(), 2)
+      local max = this.stop - this.start
+      local pos = width - width/max*cur
+
+      pos = math.max(0, pos)
+      pos = math.min(width, pos)
+
       if not C.unitframes.player.pheight then return end
       this.spark:SetPoint("LEFT", pos-((C.unitframes.player.pheight+5)/2), 0)
     end)
