@@ -17,6 +17,26 @@ pfUI:RegisterSkin("Merchant", "vanilla:tbc", function ()
     MerchantRepairAllButton:SetPoint("RIGHT", MerchantBuyBackItemItemButton, "LEFT", -6, 0)
   end
 
+  --Merchant/vendor page mouse scrolling feature function (msscroll)
+  if C["global"]["msscroll"] == "1" then
+    function MouseScrollCapability()
+      if (arg1 > 0) then
+        if (MerchantPrevPageButton:IsShown() and MerchantPrevPageButton:IsEnabled() == 1) then
+          MerchantPrevPageButton_OnClick()
+        end
+      elseif (arg1 < 0) then
+        if (MerchantNextPageButton:IsShown() and MerchantNextPageButton:IsEnabled() == 1) then
+          MerchantNextPageButton_OnClick()
+        end
+      end
+    end
+  
+    --Enable mouse scrolling for merchant/vendor page switch
+    MerchantFrame:EnableMouseWheel(true)
+    MerchantFrame:SetScript("OnMouseWheel", MouseScrollCapability)
+  end
+  --msscroll
+
   StripTextures(MerchantFrame)
   CreateBackdrop(MerchantFrame, nil, nil, .75)
   CreateBackdropShadow(MerchantFrame)
