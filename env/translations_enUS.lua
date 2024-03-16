@@ -47,6 +47,7 @@ pfUI_translation["enUS"] = {
   ["Automatic Text Color"] = nil,
   ["Auto Paging"] = nil,
   ["Auto Repair Items"] = nil,
+  ["Enable Merchant & Spellbook Scrolling"] = nil, --msscroll
   ["Auto Sell Grey Items"] = nil,
   ["Average Per Hour"] = nil,
   ["Background Color"] = nil,
