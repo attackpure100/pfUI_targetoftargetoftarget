@@ -54,6 +54,7 @@ function pfUI:LoadConfig()
   pfUI:UpdateConfig("global",     nil,           "servertime",       "0")
   pfUI:UpdateConfig("global",     nil,           "autosell",         "0")
   pfUI:UpdateConfig("global",     nil,           "autorepair",       "0")
+  pfUI:UpdateConfig("global",     nil,           "msscroll",         "0") --msscroll
   pfUI:UpdateConfig("global",     nil,           "libhealth",        "1")
   pfUI:UpdateConfig("global",     nil,           "libhealth_hit",    "4")
   pfUI:UpdateConfig("global",     nil,           "libhealth_dmg",    ".05")
